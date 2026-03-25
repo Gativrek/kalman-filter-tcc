@@ -2,7 +2,6 @@
 
 MATLAB implementation and comparative analysis of the linear Kalman Filter (KF), Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF) applied to the mobile robot localization problem, developed for an undergraduate thesis (TCC). The undergraduate thesis is currently only available in Portuguese.
 
----
 
 ## Overview
 
@@ -13,7 +12,6 @@ Performance is assessed using two metrics:
 - **RMSE** (Root Mean Square Error) — measures estimation accuracy
 - **NEES** (Normalized Estimation Error Squared) — measures statistical consistency
 
----
 
 ## Repository Structure
 
@@ -24,6 +22,7 @@ kalman-filter-tcc/
 ├── heatMapping/        # Spatial heatmap visualization
 └── obstacleMapping/    # Obstacle environment
 ```
+
 
 ### Folder Descriptions
 
@@ -39,7 +38,6 @@ Contains the 3rd version of the scripts. Generates spatial heatmaps showing wher
 **`obstacleMapping/`**  
 Contains the 2nd version of the scripts. Generates obstacles and collision checks, however lacks a module to fix trajectories.
 
----
 
 ## Robot Model
 
@@ -47,7 +45,6 @@ The robot is modeled using the standard **unicycle kinematic model**:
 
 $$\dot{x} = v \cos(\theta), \quad \dot{y} = v \sin(\theta), \quad \dot{\theta} = \omega$$
 
----
 
 ## Filters Implemented
 
@@ -59,7 +56,6 @@ $$\dot{x} = v \cos(\theta), \quad \dot{y} = v \sin(\theta), \quad \dot{\theta} =
 
 All filters operate in discrete time and share the same process and measurement noise covariance matrices for fair comparison.
 
----
 
 ## Simulation Parameters
 
@@ -70,7 +66,6 @@ All filters operate in discrete time and share the same process and measurement 
 | Measurement noise | Low | High |
 | NEES confidence interval | 90% | 90% |
 
----
 
 ## Requirements
 
