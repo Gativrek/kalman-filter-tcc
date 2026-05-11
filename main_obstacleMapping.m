@@ -5,6 +5,8 @@ addpath('shared/filters', 'shared/models', 'shared/visualization', 'shared/utils
 
 %% Initialize parameters
 params = initParameters();
+seed = 22011;
+rng(seed);
 
 %% Define fixed obstacles
 obstacles = [struct('center', [2; 4], 'radius', 0.6)];
@@ -20,10 +22,14 @@ P_EKF = params.initialCovariance;
 P_UKF = params.initialCovariance;
 
 %% Initialize trajectory storage
-trajTrue = xTrue;
-trajKF = xKF;
-trajEKF = xEKF;
-trajUKF = xUKF;
+trajTrue = NaN(3, params.maxIterations + 1);
+trajKF  = NaN(3, params.maxIterations + 1);
+trajEKF = NaN(3, params.maxIterations + 1);
+trajUKF = NaN(3, params.maxIterations + 1);
+trajTrue(:, 1) = xTrue;
+trajKF(:, 1) = xKF;
+trajEKF(:, 1) = xEKF;
+trajUKF(:, 1) = xUKF;
 
 %% Initialize error tracking
 errorX_KF = zeros(1, params.maxIterations);
@@ -108,10 +114,10 @@ for k = 1:params.maxIterations
     [xUKF, P_UKF] = unscentedKalmanFilter(xUKF, P_UKF, zOdom, zGPS, gpsAvailable, params);
     
     % Store trajectories
-    trajTrue = [trajTrue, xTrue];
-    trajKF = [trajKF, xKF];
-    trajEKF = [trajEKF, xEKF];
-    trajUKF = [trajUKF, xUKF];
+    trajTrue(:, k+1) = xTrue;
+    trajKF(:, k+1) = xKF;
+    trajEKF(:, k+1) = xEKF;
+    trajUKF(:, k+1) = xUKF;
     
     % Compute errors
     handles.errorX_KF(k) = xKF(1) - xTrue(1);

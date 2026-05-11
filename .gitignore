@@ -8,17 +8,10 @@
 *.mexw32
 *.mexa64
 
-# Simulink generated files (if applicable)
+# Simulink generated files
 slprj/
 *.slx.r*
 codegen/
 
 # MATLAB preferences and session files
 *.mat.bak
-
-# OS junk
-.DS_Store
-Thumbs.db
-
-# VSCode settings (optional — remove if you want to track these)
-.vscode/

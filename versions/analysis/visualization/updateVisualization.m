@@ -13,7 +13,7 @@ function handles = updateVisualization(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_
 
 %% Trajectory
 % Trajectory plot
-subplot(2, 4, [1, 2]);
+subplot(2, 3, 1);
 cla; hold on;
 grid on;
 xlabel('x [m]');
@@ -61,16 +61,16 @@ text(0.02, 0.98, sprintf('Iter: %d/%d', iteration, params.maxIterations), 'Units
 text(0.02, 0.90, gpsText, 'Units', 'normalized', 'VerticalAlignment', 'top', 'FontSize', 9, 'BackgroundColor', 'white', 'EdgeColor', 'black', 'Color', gpsColor, 'FontWeight', 'bold');
 
 %% Covariance Trace
-subplot(2, 4, 3);
+subplot(2, 3, 2);
 plotCovarianceTrace(handles.trace_KF, handles.trace_EKF, handles.trace_UKF, iteration, params);
 
 %% NEES Plot
-subplot(2, 4, 4);
+subplot(2, 3, 3);
 plotNEES(handles.nees_KF, handles.nees_EKF, handles.nees_UKF, iteration, 3);
 
 %% Heat Maps
 % KF Heat Map
-subplot(2, 4, 5);
+subplot(2, 3, 4);
 imagesc([params.heatMapXLim(1), params.heatMapXLim(2)], [params.heatMapYLim(1), params.heatMapYLim(2)], heatMap_KF / max(heatMap_KF(:)));
 set(gca, 'YDir', 'normal');
 colormap(gca, hot);
@@ -83,7 +83,7 @@ title('KF: Path Certainty', 'FontWeight', 'bold', 'Color', params.colorKF);
 grid on;
 
 % EKF Heat Map
-subplot(2, 4, 6);
+subplot(2, 3, 5);
 imagesc([params.heatMapXLim(1), params.heatMapXLim(2)], [params.heatMapYLim(1), params.heatMapYLim(2)], heatMap_EKF / max(heatMap_EKF(:)));
 set(gca, 'YDir', 'normal');
 colormap(gca, hot);
@@ -96,7 +96,7 @@ title('EKF: Path Certainty', 'FontWeight', 'bold', 'Color', params.colorEKF);
 grid on;
 
 % UKF Heat Map
-subplot(2, 4, 7);
+subplot(2, 3, 6);
 imagesc([params.heatMapXLim(1), params.heatMapXLim(2)], [params.heatMapYLim(1), params.heatMapYLim(2)], heatMap_UKF / max(heatMap_UKF(:)));
 set(gca, 'YDir', 'normal');
 colormap(gca, hot);

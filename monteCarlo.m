@@ -171,7 +171,7 @@ pct_KF = 100 * nees_KF_inside / length(results.nees_KF_all);
 pct_EKF = 100 * nees_EKF_inside / length(results.nees_EKF_all);
 pct_UKF = 100 * nees_UKF_inside / length(results.nees_UKF_all);
 
-fprintf('\nNEES within [0.35, 7.81] (95%% confidence):\n');
+fprintf('\nNEES within [0.35, 7.81] (90%% confidence):\n');
 fprintf('  KF:  %.1f%%  (%d/%d)\n', pct_KF, nees_KF_inside, length(results.nees_KF_all));
 fprintf('  EKF: %.1f%%  (%d/%d)\n', pct_EKF, nees_EKF_inside, length(results.nees_EKF_all));
 fprintf('  UKF: %.1f%%  (%d/%d)\n', pct_UKF, nees_UKF_inside, length(results.nees_UKF_all));
