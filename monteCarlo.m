@@ -2,7 +2,7 @@
 clear; clc; close all;
 
 %% Add paths
-addpath('models', 'filters', 'simulation', 'visualization', 'mapping', 'analysis');
+addpath('shared/filters', 'shared/models', 'shared/simulation', 'versions/analysis', 'versions/analysis/analysis');
 
 %% Parameters
 seed = 22011;

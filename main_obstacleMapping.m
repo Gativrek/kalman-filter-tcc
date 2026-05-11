@@ -1,12 +1,13 @@
 clear; clc; close all;
 
 %% Add paths
-addpath('models', 'filters', 'simulation', 'visualization');
+addpath('shared/filters', 'shared/models', 'shared/visualization', 'shared/utils', 'versions/obstacleMapping', 'versions/obstacleMapping/simulation', 'versions/obstacleMapping/visualization');
 
 %% Initialize parameters
 params = initParameters();
-seed = 22011;
-rng(seed);
+
+%% Define fixed obstacles
+obstacles = [struct('center', [2; 4], 'radius', 0.6)];
 
 %% Initialize states
 xTrue = params.initialTrueState;
@@ -37,61 +38,62 @@ errorX_UKF = zeros(1, params.maxIterations);
 errorY_UKF = zeros(1, params.maxIterations);
 errorTheta_UKF = zeros(1, params.maxIterations);
 
+%% Track collisions
+collisionCount = 0;
+
 %% Setup visualization
 fig = figure('Name', 'Unicycle Filter Comparison', 'Position', [100, 100, 1400, 800]);
 
-tiles = tiledlayout(2, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
+tiles = tiledlayout(1, 3, 'TileSpacing', 'compact', 'Padding', 'compact');
 
 handles.tiles = tiles;
-handles.xlim = [-2, 12];
-handles.ylim = [-2, 12];
 handles.errorX_KF = errorX_KF;
 handles.errorY_KF = errorY_KF;
 handles.errorTheta_KF = errorTheta_KF;
+
 handles.errorX_EKF = errorX_EKF;
 handles.errorY_EKF = errorY_EKF;
 handles.errorTheta_EKF = errorTheta_EKF;
+
 handles.errorX_UKF = errorX_UKF;
 handles.errorY_UKF = errorY_UKF;
 handles.errorTheta_UKF = errorTheta_UKF;
 
+handles.obstacles = obstacles;
+
 % Initial visualization
-handles = updateVisualization(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_EKF, P_UKF, trajTrue, trajKF, trajEKF, trajUKF, 1, params);
+handles = updateVisualizationWithObstacles(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_EKF, P_UKF, trajTrue, trajKF, trajEKF, trajUKF, 1, params);
 
 %% Main loop
 for k = 1:params.maxIterations
-    
-    if params.scenario == 1
-        if k < 20
-            u = [3.0; 0.5];
-        elseif k < 40
-            u = [3.0; -0.5];
-        elseif k < 60
-            u = [3.0; 0.5];
-        elseif k < 80
-            u = [3.0; -0.5];
-        else
-            u = [3.0; 0.5];
-        end
-    elseif params.scenario == 2
-        if k < 20
-            u = [4.5; 1.2];
-        elseif k < 40
-            u = [4.5; -1.2];
-        elseif k < 60
-            u = [4.5; 1.2];
-        elseif k < 80
-            u = [4.5; -1.2];
-        else
-            u = [4.5; 1.2];
-        end
-    end
 
+    if k < 20
+            u = [3.0; 0.5];
+        elseif k < 40
+            u = [3.0; -0.5];
+        elseif k < 60
+            u = [3.0; 0.5];
+        elseif k < 80
+            u = [3.0; -0.5];
+        else
+            u = [3.0; 0.5];
+    end
+    
     % Propagate ground truth
-    xTrue = propagateGroundTruth(xTrue, u, params.dt);
+    xOld = xTrue;
+    [xTrue, actualMovement] = propagateGroundTruthWithObstacles(xTrue, u, params.dt, obstacles);
+    
+    % Check if collision occurred
+    if norm(actualMovement(1:2)) < 0.01 && norm(u) > 0.1
+        collisionCount = collisionCount + 1;
+    end
     
     % Generate sensor measurements
-    zOdom = measurementOdometry(u, params.R_odom);
+    actualLinearVel = norm(actualMovement(1:2)) / params.dt;
+    actualAngularVel = actualMovement(3) / params.dt;
+    
+    zOdom = [actualLinearVel; actualAngularVel] + mvnrnd([0;0], params.R_odom)';
+    zOdom(1) = max(0, zOdom(1));
     
     gpsAvailable = (mod(k, params.gpsAvailabilityRate) == 0);
     if gpsAvailable
@@ -125,22 +127,12 @@ for k = 1:params.maxIterations
     handles.errorTheta_UKF(k) = rad2deg(angdiff(xUKF(3), xTrue(3)));
     
     % Update visualization
-    handles = updateVisualization(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_EKF, P_UKF, trajTrue, trajKF, trajEKF, trajUKF, k, params);
+    handles = updateVisualizationWithObstacles(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_EKF, P_UKF, trajTrue, trajKF, trajEKF, trajUKF, k, params);
     
     pause(0.01);
 end
 
 %% Final statistics
 fprintf('Simulation Statistics\n');
-
-rmse_KF = sqrt(mean(handles.errorX_KF.^2 + handles.errorY_KF.^2));
-rmse_EKF = sqrt(mean(handles.errorX_EKF.^2 + handles.errorY_EKF.^2));
-rmse_UKF = sqrt(mean(handles.errorX_UKF.^2 + handles.errorY_UKF.^2));
-
-heading_KF = sqrt(mean(handles.errorTheta_KF.^2));
-heading_EKF = sqrt(mean(handles.errorTheta_EKF.^2));
-heading_UKF = sqrt(mean(handles.errorTheta_UKF.^2));
-
-fprintf('KF  - RMSE: %.3f m, Heading: %.2f deg\n', rmse_KF, heading_KF);
-fprintf('EKF - RMSE: %.3f m, Heading: %.2f deg\n', rmse_EKF, heading_EKF);
-fprintf('UKF - RMSE: %.3f m, Heading: %.2f deg\n', rmse_UKF, heading_UKF);
+printStatistics(handles)
+fprintf('Total collisions detected: %d\n', collisionCount);
