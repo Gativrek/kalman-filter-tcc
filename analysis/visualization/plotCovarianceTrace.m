@@ -20,7 +20,7 @@ plot(1:iteration, trace_EKF_smooth, '-', 'Color', params.colorEKF, 'LineWidth', 
 plot(1:iteration, trace_UKF_smooth, '-', 'Color', params.colorUKF, 'LineWidth', 2, 'DisplayName', 'UKF');
 
 xlabel('Iteration');
-ylabel('trace$P)');
+ylabel('trace(P)');
 title('Covariance Evolution', 'FontWeight', 'bold');
 legend('Location', 'best', 'FontSize', 9);
 

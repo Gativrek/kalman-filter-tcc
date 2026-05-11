@@ -1,16 +1,19 @@
-function heatMap = updateHeatMap(heatMap, xRobot, P, xlim, ylim, resolution)
+function heatMap = updateHeatMap(heatMap, xRobot, P, params)
 % Updates heat map with Gaussian spreading based on uncertainty
-% VERSION 2 - Gaussian accumulation
 %
 % INPUTS:
 %   heatMap    - Current heat map
 %   xRobot     - Robot position estimate [x; y; theta]
 %   P          - Covariance matrix (at least 3x3, uses first 2x2 for position)
-%   xlim, ylim - Grid bounds
-%   resolution - Grid cell size
+%   params     - Parameters structure
 %
 % OUTPUT:
 %   heatMap - Updated heat map
+
+% Parameter extraction
+xlim = params.heatMapXLim;
+ylim = params.heatMapYLim;
+resolution = params.heatMapResolution;
 
 % Extract position and position covariance
 pos = xRobot(1:2);

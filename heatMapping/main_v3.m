@@ -128,9 +128,9 @@ for k = 1:params.maxIterations
     timeUKF = toc;
 
     % Update heat maps
-    heatMap_KF = updateHeatMap(heatMap_KF, xKF, P_KF,  params.heatMapXLim, params.heatMapYLim, params.heatMapResolution);
-    heatMap_EKF = updateHeatMap(heatMap_EKF, xEKF, P_EKF, params.heatMapXLim, params.heatMapYLim, params.heatMapResolution);
-    heatMap_UKF = updateHeatMap(heatMap_UKF, xUKF, P_UKF, params.heatMapXLim, params.heatMapYLim, params.heatMapResolution);
+    heatMap_KF = updateHeatMap(heatMap_KF, xKF, P_KF,  params);
+    heatMap_EKF = updateHeatMap(heatMap_EKF, xEKF, P_EKF, params);
+    heatMap_UKF = updateHeatMap(heatMap_UKF, xUKF, P_UKF, params);
     
     % Store trajectories
     trajTrue = [trajTrue, xTrue];

@@ -31,7 +31,7 @@ verticesWorld(:, 2) = verticesWorld(:, 2) + y;
 hold on;
 h = patch(verticesWorld(:, 1), verticesWorld(:, 2), color, 'EdgeColor', color * 0.6, 'LineWidth', 1.5, 'LineStyle', lineStyle);
 
-% Draw direction indicator (arrow)
+% Draw direction indicator
 arrowLength = bodyLength * 0.7;
 xArrow = [x, x + arrowLength * cos(theta)];
 yArrow = [y, y + arrowLength * sin(theta)];
