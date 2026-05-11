@@ -1,5 +1,5 @@
 function handles = updateVisualization(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_EKF, P_UKF, trajTrue, trajKF, trajEKF, trajUKF, iteration, params)
-% Updates all visualization elements with DYNAMIC AXES
+% Updates all visualization elements
 %
 % INPUTS:
 %   handles   - Structure with graphics handles
@@ -11,7 +11,7 @@ function handles = updateVisualization(handles, xTrue, xKF, xEKF, xUKF, P_KF, P_
 %   params    - Parameters structure
 
 %% Main plot (top view)
-nexttile(handles.tiles, 1);
+nexttile(handles.tiles, 1, [2 2]);
 cla; hold on;
 grid on;
 xlabel('x [m]');
@@ -49,30 +49,28 @@ legend('True', 'KF', 'EKF', 'UKF', 'Location', 'best', 'FontSize', 10);
 % Add iteration counter
 text(0.02, 0.98, sprintf('Iteration: %d/%d', iteration, params.maxIterations), 'Units', 'normalized', 'VerticalAlignment', 'top', 'FontSize', 10, 'BackgroundColor', 'white', 'EdgeColor', 'black');
 
-%% Position error plots
-nexttile(handles.tiles, 2);
-cla; hold on; grid on;
-plot(1:iteration, handles.errorX_KF(1:iteration), '-', 'Color', params.colorKF, 'LineWidth', 1.5);
-plot(1:iteration, handles.errorX_EKF(1:iteration), '-', 'Color', params.colorEKF, 'LineWidth', 1.5);
-plot(1:iteration, handles.errorX_UKF(1:iteration), '-', 'Color', params.colorUKF, 'LineWidth', 1.5);
-xlabel('Iteration');
-ylabel('x Error [m]');
-title('X Position Error', 'FontWeight', 'bold');
-xlim([1, params.maxIterations]);
-
+%% Euclidean position error
 nexttile(handles.tiles, 3);
 cla; hold on; grid on;
-plot(1:iteration, handles.errorY_KF(1:iteration), '-', 'Color', params.colorKF, 'LineWidth', 1.5);
-plot(1:iteration, handles.errorY_EKF(1:iteration), '-', 'Color', params.colorEKF, 'LineWidth', 1.5);
-plot(1:iteration, handles.errorY_UKF(1:iteration), '-', 'Color', params.colorUKF, 'LineWidth', 1.5);
-xlabel('Iteration');
-ylabel('y Error [m]');
-title('Y Position Error', 'FontWeight', 'bold');
-xlim([1, params.maxIterations]);
 
-nexttile(handles.tiles, 4);
+eucl_KF  = sqrt(handles.errorX_KF(1:iteration).^2  + handles.errorY_KF(1:iteration).^2);
+eucl_EKF = sqrt(handles.errorX_EKF(1:iteration).^2 + handles.errorY_EKF(1:iteration).^2);
+eucl_UKF = sqrt(handles.errorX_UKF(1:iteration).^2 + handles.errorY_UKF(1:iteration).^2);
+
+plot(1:iteration, eucl_KF,  '-', 'Color', params.colorKF,  'LineWidth', 1.5);
+plot(1:iteration, eucl_EKF, '-', 'Color', params.colorEKF, 'LineWidth', 1.5);
+plot(1:iteration, eucl_UKF, '-', 'Color', params.colorUKF, 'LineWidth', 1.5);
+xlabel('Iteration');
+ylabel('Position Error [m]');
+title('Euclidean Position Error', 'FontWeight', 'bold');
+legend('KF', 'EKF', 'UKF', 'Location', 'best', 'FontSize', 9);
+xlim([1, params.maxIterations]);
+ylim([0, inf]);
+
+%% Heading error
+nexttile(handles.tiles, 6);
 cla; hold on; grid on;
-plot(1:iteration, handles.errorTheta_KF(1:iteration), '-', 'Color', params.colorKF, 'LineWidth', 1.5);
+plot(1:iteration, handles.errorTheta_KF(1:iteration),  '-', 'Color', params.colorKF,  'LineWidth', 1.5);
 plot(1:iteration, handles.errorTheta_EKF(1:iteration), '-', 'Color', params.colorEKF, 'LineWidth', 1.5);
 plot(1:iteration, handles.errorTheta_UKF(1:iteration), '-', 'Color', params.colorUKF, 'LineWidth', 1.5);
 xlabel('Iteration');

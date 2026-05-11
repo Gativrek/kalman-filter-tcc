@@ -44,7 +44,7 @@ collisionCount = 0;
 %% Setup visualization
 fig = figure('Name', 'Unicycle Filter Comparison', 'Position', [100, 100, 1400, 800]);
 
-tiles = tiledlayout(1, 3, 'TileSpacing', 'compact', 'Padding', 'compact');
+tiles = tiledlayout(2, 3, 'TileSpacing', 'compact', 'Padding', 'compact');
 
 handles.tiles = tiles;
 handles.errorX_KF = errorX_KF;
