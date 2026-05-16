@@ -1,4 +1,4 @@
-# Kalman Filtering — Undergraduate Thesis
+# Overview
 
 MATLAB simulations developed for an undergraduate thesis on the **global localization problem** applied to a unicycle-model robot. The project compares three filtering approaches — a linear Kalman Filter (KF), an Extended Kalman Filter (EKF), and an Unscented Kalman Filter (UKF) — across four simulation versions of increasing complexity and features. The thesis is available in the [IFF Digital Library](https://bd.centro.iff.edu.br/jspui/bitstream/123456789/5289/1/Texto.pdf) in Brazilian Portuguese, with the thesis defense being available on [YouTube](https://youtu.be/98WBEQ-3_ek) with English subtitles.
 
